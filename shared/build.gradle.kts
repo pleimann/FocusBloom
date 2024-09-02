@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -37,13 +40,16 @@ android {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
         }
     }
+
     jvm()
 
     iosArm64()
@@ -63,10 +69,10 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
-            @OptIn(ExperimentalKotlinGradlePluginApi::class)
             transitiveExport = true
-            compilations.all {
-                kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
+            compilerOptions {
+                freeCompilerArgs.add("-linker-options")
+                freeCompilerArgs.add("-lsqlite3")
             }
         }
     }
@@ -113,12 +119,15 @@ kotlin {
             implementation(libs.accompanist.systemUIController)
             implementation(libs.core)
             implementation(libs.compose.activity)
+
+            implementation(libs.stately.common)
         }
 
         jvmMain.dependencies {
             implementation(libs.sqlite.driver)
 
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.stately.common)
 
             // Toaster for Windows
             implementation(libs.toast4j)
@@ -137,6 +146,8 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.native.driver)
 
+            implementation(libs.stately.isolate)
+            implementation(libs.stately.isolate.collections)
 
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)        }

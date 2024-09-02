@@ -56,16 +56,15 @@ import com.joelkanyi.focusbloom.main.MainScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 class UsernameScreen : Screen, KoinComponent {
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Content() {
-        val onboadingViewModel = rememberKoinInject<OnboadingViewModel>()
+        val onboadingViewModel = koinInject<OnboadingViewModel>()
         val navigator = LocalNavigator.currentOrThrow
         val username = onboadingViewModel.username.collectAsState().value
         val keyboardController = LocalSoftwareKeyboardController.current

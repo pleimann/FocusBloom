@@ -48,6 +48,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -113,6 +114,7 @@ fun AddTaskScreen(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,
     )
+
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
@@ -136,6 +138,7 @@ fun AddTaskScreen(
         initialMinute = today().minute,
         is24Hour = hourFormat == 24,
     )
+
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
     )
@@ -640,7 +643,7 @@ fun TimerInputDialog(
             )
         },
         text = {
-            TimeInput(
+            TimePicker(
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
             )

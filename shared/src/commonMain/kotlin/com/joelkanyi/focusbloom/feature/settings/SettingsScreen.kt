@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.VolumeUp
 import androidx.compose.material.icons.outlined.HourglassEmpty
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
@@ -435,7 +436,7 @@ fun SoundSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
         },
         expanded = expanded("Sounds"),
         title = "Sounds",
-        icon = Icons.Outlined.VolumeUp,
+        icon = Icons.AutoMirrored.Outlined.VolumeUp,
         content = {
             var alarmSliderPosition by remember { mutableStateOf(0f) }
             var tickingSliderPosition by remember { mutableStateOf(0f) }

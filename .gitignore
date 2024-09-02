@@ -7,19 +7,7 @@ captures
 /local.properties
 
 # IntelliJ .idea folder
-.idea/workspace.xml
-.idea/misc.xml
-.idea/libraries
-.idea/caches
-.idea/navEditor.xml
-.idea/tasks.xml
-.idea/modules.xml
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/deploymentTargetDropDown.xml
-.idea/androidTestResultsUserPreferences.xml
-.idea/appInsightsSettings.xml
-.idea/artifacts
+.idea/
 gradle.xml
 *.iml
 .fleet
@@ -101,3 +89,4 @@ test_output
 *.env*
 
 .kotlin
+/ios/Pods/

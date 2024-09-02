@@ -15,6 +15,7 @@
  */
 package com.joelkanyi.focusbloom.feature.statistics.component
 
+import androidx.compose.foundation.checkScrollableContainerConstraints
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,18 +31,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.core.utils.aAllEntriesAreZero
 import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.BarChartEntry
-import io.github.koalaplot.core.bar.DefaultBarChartEntry
+import io.github.koalaplot.core.bar.VerticalBarPlotEntry
+import io.github.koalaplot.core.bar.DefaultVerticalBarPlotEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
-import io.github.koalaplot.core.bar.VerticalBarChart
+import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
+import io.github.koalaplot.core.bar.VerticalBarPlot
+import io.github.koalaplot.core.bar.VerticalBarPosition
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
+import io.github.koalaplot.core.util.VerticalRotation.COUNTER_CLOCKWISE
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.TickPosition
-import io.github.koalaplot.core.xychart.XYChart
-import io.github.koalaplot.core.xychart.rememberAxisStyle
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.TickPosition
+import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisStyle
 
 internal val padding = 8.dp
 internal val paddingMod = Modifier.padding(padding)
@@ -70,14 +74,16 @@ fun AxisLabel(label: String, modifier: Modifier = Modifier) {
     )
 }
 
-fun barChartEntries(fibonacci: List<Float>): List<BarChartEntry<Float, Float>> {
+fun barChartEntries(fibonacci: List<Float>): List<VerticalBarPlotEntry<Float, Float>> {
     return buildList {
         fibonacci.forEachIndexed { index, fl ->
             add(
-                DefaultBarChartEntry(
-                    xValue = (index + 1).toFloat(),
-                    yMin = 0f,
-                    yMax = fl,
+                DefaultVerticalBarPlotEntry(
+                    x = (index + 1).toFloat(),
+                    y = DefaultVerticalBarPosition(
+                        yMin = 0f,
+                        yMax = fl,
+                    )
                 ),
             )
         }
@@ -93,15 +99,31 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
         modifier = paddingMod,
         title = { },
     ) {
-        XYChart(
-            xAxisModel = LinearAxisModel(
+        /*
+            xAxisModel: AxisModel<X>,
+            yAxisModel: AxisModel<Y>,
+            modifier: Modifier = Modifier,
+            xAxisStyle: AxisStyle = rememberAxisStyle(),
+            xAxisLabels: (X) -> String = { it.toString() },
+            xAxisTitle: String? = null,
+            yAxisStyle: AxisStyle = rememberAxisStyle(),
+            yAxisLabels: (Y) -> String = { it.toString() },
+            yAxisTitle: String? = null,
+            horizontalMajorGridLineStyle: LineStyle? = KoalaPlotTheme.axis.majorGridlineStyle,
+            horizontalMinorGridLineStyle: LineStyle? = KoalaPlotTheme.axis.minorGridlineStyle,
+            verticalMajorGridLineStyle: LineStyle? = KoalaPlotTheme.axis.majorGridlineStyle,
+            verticalMinorGridLineStyle: LineStyle? = KoalaPlotTheme.axis.minorGridlineStyle,
+            panZoomEnabled: Boolean = true,
+         */
+        XYGraph(
+            xAxisModel = FloatLinearAxisModel(
                 xAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minimumMajorTickSpacing = 10.dp,
                 zoomRangeLimit = 3f,
                 minorTickCount = 0,
             ),
-            yAxisModel = LinearAxisModel(
+            yAxisModel = FloatLinearAxisModel(
                 yAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minorTickCount = 0,
@@ -110,9 +132,9 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
                 tickPosition = tickPositionState.horizontalAxis,
                 color = Color.LightGray,
             ),
-            xAxisLabels = {
+            xAxisLabels = { tick: Float ->
                 AxisLabel(
-                    when (it) {
+                    label = when(tick) {
                         1f -> "Mon"
                         2f -> "Tue"
                         3f -> "Wed"
@@ -121,8 +143,7 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
                         6f -> "Sat"
                         7f -> "Sun"
                         else -> ""
-                    },
-                    Modifier.padding(top = 2.dp),
+                    }
                 )
             },
             xAxisTitle = {
@@ -131,31 +152,33 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
                     modifier = Modifier.padding(top = 8.dp),
                 )
             },
-            yAxisStyle = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
-            yAxisLabels = {
-                AxisLabel(it.toString(0), Modifier.absolutePadding(right = 2.dp))
+            yAxisStyle = rememberAxisStyle(
+                tickPosition = tickPositionState.verticalAxis
+            ),
+            yAxisLabels = { tick: Float ->
+                AxisLabel(tick.toString(0), Modifier.absolutePadding(right = 2.dp))
             },
             yAxisTitle = {
                 AxisTitle(
                     "Tasks Completed",
-                    modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                    modifier = Modifier.rotateVertically(COUNTER_CLOCKWISE)
                         .padding(bottom = padding),
                 )
             },
-            verticalMajorGridLineStyle = null,
         ) {
-            VerticalBarChart(
-                series = listOf(
-                    barChartEntries(
-                        fibonacci = entries,
-                    ),
-                ),
-                bar = { _, _, value ->
+            val barChartEntries = barChartEntries(
+                fibonacci = entries,
+            )
+
+            VerticalBarPlot(
+                xData = barChartEntries.map { entry -> entry.x },
+                yData =  barChartEntries.map { entry -> entry.x },
+                bar = {index ->
                     DefaultVerticalBar(
                         brush = SolidColor(MaterialTheme.colorScheme.primary),
                         modifier = Modifier.fillMaxWidth(BarWidth),
                     ) {
-                        HoverSurface { Text(value.yMax.toString()) }
+                        HoverSurface { Text(barChartEntries.get(index).toString()) }
                     }
                 },
             )

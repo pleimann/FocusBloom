@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,6 +46,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.datetime.LocalDate
+import org.koin.compose.koinInject
 import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -53,7 +55,7 @@ class AllStatisticsScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
-        val screenModel = rememberKoinInject<StatisticsScreenModel>()
+        val screenModel = koinInject<StatisticsScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,
@@ -111,7 +113,7 @@ fun AllStatisticsScreenContent(
                 navigationIcon = {
                     IconButton(onClick = onClickNavigateBack) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = "Back",
                         )
                     }

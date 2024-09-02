@@ -1,4 +1,5 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google()
@@ -10,6 +11,7 @@ pluginManagement {
 }
 
 rootProject.name = "FocusBloom"
+
 include(":android")
 include(":desktop")
 include(":shared")

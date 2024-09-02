@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored.Outlined
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -247,7 +249,7 @@ fun FocusTimeScreenContent(
                 navigationIcon = {
                     IconButton(onClick = onClickNavigateBack) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = Outlined.ArrowBack,
                             contentDescription = "Add Task Back Button",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )

@@ -47,14 +47,13 @@ class AddTaskScreenModel(
     val eventsFlow = _eventsFlow.receiveAsFlow()
 
     val sessionTime = settingsRepository.getSessionTime()
-        .map {
-            it
-        }
+        .map { it }
         .stateIn(
             scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
+
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
@@ -62,6 +61,7 @@ class AddTaskScreenModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
+
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
@@ -69,6 +69,7 @@ class AddTaskScreenModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
+
     val hourFormat = settingsRepository.getHourFormat()
         .map { it }
         .stateIn(

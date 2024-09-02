@@ -27,6 +27,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "com.diffplug.spotless")
+
     spotless {
         kotlin {
             target("**/*.kt")
@@ -39,7 +40,7 @@ subprojects {
         }
         format("kts") {
             target("**/*.kts")
-            targetExclude("$buildDir/**/*.kts")
+            targetExclude("${layout.buildDirectory}/**/*.kts")
             licenseHeaderFile(rootProject.file("spotless/copyright.kt"), "(^(?![\\/ ]\\*).*$)")
         }
         format("misc") {

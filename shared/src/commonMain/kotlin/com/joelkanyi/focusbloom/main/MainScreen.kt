@@ -78,8 +78,7 @@ class MainScreen : Screen {
                 Scaffold(
                     content = { innerPadding ->
                         Box(
-                            modifier = Modifier
-                                .padding(innerPadding),
+                            modifier = Modifier.padding(innerPadding),
                         ) {
                             CurrentScreen()
                         }
@@ -108,9 +107,7 @@ class MainScreen : Screen {
                         }
                     },
                     bottomBar = {
-                        BottomNavigation(
-                            backgroundColor = MaterialTheme.colorScheme.background,
-                        ) {
+                        BottomNavigation(backgroundColor = MaterialTheme.colorScheme.background) {
                             TabNavigationItem(BloomTab.HomeTab)
                             TabNavigationItem(BloomTab.CalendarTab)
                             TabNavigationItem(BloomTab.StatisticsTab)

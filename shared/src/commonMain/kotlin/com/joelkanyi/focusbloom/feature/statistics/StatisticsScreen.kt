@@ -83,7 +83,7 @@ import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.redo
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
-import io.github.koalaplot.core.xychart.TickPosition
+import io.github.koalaplot.core.xygraph.TickPosition
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
