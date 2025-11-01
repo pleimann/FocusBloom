@@ -28,7 +28,6 @@ import com.joelkanyi.focusbloom.main.MainScreen
 import com.joelkanyi.focusbloom.main.MainViewModel
 import com.joelkanyi.focusbloom.main.OnBoardingState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.koin.compose.KoinContext
 
 @Composable
 fun FocusBloomApp(
@@ -40,31 +39,29 @@ fun FocusBloomApp(
     }
     val onBoardingCompleted = mainViewModel.onBoardingCompleted.collectAsState().value
 
-    KoinContext {
-        FocusBloomTheme(
-            useDarkTheme = darkTheme,
-        ) {
-            val navController = rememberNavController()
+    FocusBloomTheme(
+        useDarkTheme = darkTheme,
+    ) {
+        val navController = rememberNavController()
 
-            StatusBarColors(
-                statusBarColor = MaterialTheme.colorScheme.background,
-                navBarColor = MaterialTheme.colorScheme.background,
-            )
-            when (onBoardingCompleted) {
-                is OnBoardingState.Success -> {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background,
-                    ) {
-                        MainScreen(
-                            onBoardingCompleted = onBoardingCompleted.completed,
-                            navController = navController,
-                        )
-                    }
+        StatusBarColors(
+            statusBarColor = MaterialTheme.colorScheme.background,
+            navBarColor = MaterialTheme.colorScheme.background,
+        )
+        when (onBoardingCompleted) {
+            is OnBoardingState.Success -> {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    MainScreen(
+                        onBoardingCompleted = onBoardingCompleted.completed,
+                        navController = navController,
+                    )
                 }
-
-                else -> {}
             }
+
+            else -> {}
         }
     }
 }

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalTime::class)
+
 package com.joelkanyi.focusbloom.feature.calendar
 
 import androidx.compose.animation.AnimatedVisibility
@@ -111,13 +113,14 @@ import com.joelkanyi.focusbloom.platform.StatusBarColors
 import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.redo
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.roundToInt
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable

@@ -22,7 +22,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinX.serialization.plugin)
-    id("app.cash.sqldelight") version "2.1.0"
+    alias(libs.plugins.sqlDelight.plugin)
     alias(libs.plugins.nativeCocoapod)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
@@ -40,11 +40,10 @@ android {
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
+    jvmToolchain(17)
+
+    androidTarget()
+
     jvm()
 
     iosArm64()
@@ -66,9 +65,12 @@ kotlin {
         binaries.withType<Framework> {
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             transitiveExport = true
-//            compilations.all {
-//                kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
-//            }
+            compilations.all {
+                compileTaskProvider.configure {
+                    compilerOptions.freeCompilerArgs.add("-linker-options")
+                    compilerOptions.freeCompilerArgs.add("-lsqlite3")
+                }
+            }
         }
     }
 
@@ -77,6 +79,7 @@ kotlin {
             api(libs.koin.core)
             implementation(libs.koin.compose)
 
+            implementation(compose.runtime)
             implementation(compose.material3)
             implementation(compose.material)
             implementation(compose.materialIconsExtended)
@@ -138,9 +141,9 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.native.driver)
 
-
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-            implementation(compose.components.resources)        }
+            implementation(compose.components.resources)
+        }
     }
 }
 
@@ -149,5 +152,18 @@ sqldelight {
         create("BloomDatabase") {
             packageName.set("com.joelkanyi.focusbloom.database")
         }
+    }
+}
+
+// Workaround for KLIB conflict between SQLDelight and Compose runtime
+configurations.all {
+    resolutionStrategy {
+        force("app.cash.sqldelight:runtime:2.0.2")
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }

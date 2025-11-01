@@ -18,17 +18,17 @@ package com.joelkanyi.focusbloom.core.data.mapper
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.utils.dateTimeToString
 import database.TaskEntity
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDateTime
 
 fun TaskEntity.toTask() = Task(
     id = id,
     name = name,
     description = description,
     type = type,
-    start = start.toLocalDateTime(),
+    start = LocalDateTime.parse(start),
     color = color,
     current = current,
-    date = date.toLocalDateTime(),
+    date = LocalDateTime.parse(date),
     focusSessions = focusSessions,
     completed = completed,
     consumedFocusTime = consumedFocusTime,

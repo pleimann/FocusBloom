@@ -1,31 +1,32 @@
 [versions]
 
 androidDriver = "2.1.0"
-kotlin = "2.2.20"
-compose = "1.8.2"
+kotlin = "2.2.0"
+compose = "1.9.1"
 
-koin = "4.1.0"
-koinCompose = "4.1.0"
-koinComposeMultiplatform = "4.1.0"
+koin = "4.1.1"
+koinCompose = "4.1.1"
+koinComposeMultiplatform = "4.1.1"
 
-gradle = "8.13.0"
-sqlDelight = " 2.1.0"
+android-gradle = "8.12.3"
+sqlDelight = "2.1.0"
 multiplatformSettings = "1.3.0"
-core = "1.16.0"
-jna = "5.17.0"
-koalaplotCore = "0.9.0"
+core = "1.17.0"
+jna = "5.18.1"
+koalaplotCore = "0.9.1"
 kotlinxCoroutinesSwing = "1.10.2"
 kotlinxSerializationJson = "1.9.0"
-kotlinxDateTime = "0.6.2"
+kotlinxDateTime = "0.7.1"
 material3WindowSizeClassMultiplatform = "0.5.0"
+modulegraph = "0.13.0"
 napier = "2.7.1"
 core-library-desugaring = "2.1.5"
 toast4j = "0.2.0"
-compose-activity = "1.10.1"
+compose-activity = "1.11.0"
 spotless = "8.0.0"
 accompanist-systemUIController = "0.36.0"
-androidx-lifecycle = "2.9.1"
-androidx-navigation = "2.9.0-beta03"
+androidx-lifecycle = "2.9.5"
+androidx-navigation = "2.9.1"
 
 android-compileSdk = "36"
 android-minSdk = "24"
@@ -35,6 +36,7 @@ android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = 
 core = { module = "androidx.core:core", version.ref = "core" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+jfa = { module = "de.jangassen:jfa", version.ref = "jfa" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -70,9 +72,10 @@ multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotl
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 nativeCocoapod = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-android-library = { id = "com.android.library", version.ref = "gradle" }
-android-application = { id = "com.android.application", version.ref = "gradle" }
+android-library = { id = "com.android.library", version.ref = "android-gradle" }
+android-application = { id = "com.android.application", version.ref = "android-gradle" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqlDelight-plugin = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+modulegraph = { id = "dev.iurysouza.modulegraph", version.ref = "modulegraph" }

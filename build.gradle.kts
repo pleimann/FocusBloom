@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.nativeCocoapod) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.spotless)
-    id("dev.iurysouza.modulegraph") version "0.12.0"
+    alias(libs.plugins.modulegraph)
     alias(libs.plugins.compose.compiler) apply false
 }
 
@@ -39,13 +39,12 @@ subprojects {
         }
         format("kts") {
             target("**/*.kts")
-            targetExclude("$buildDir/**/*.kts")
+            targetExclude("${layout.buildDirectory}/**/*.kts")
             licenseHeaderFile(rootProject.file("spotless/copyright.kt"), "(^(?![\\/ ]\\*).*$)")
         }
         format("misc") {
             target("**/*.md", "**/.gitignore")
             trimTrailingWhitespace()
-            indentWithTabs()
             endWithNewline()
         }
     }

@@ -31,6 +31,7 @@ android {
         versionCode = 5
         versionName = properties["version"] as String
     }
+
     buildTypes {
         // debug
         getByName("debug") {
@@ -61,6 +62,10 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
