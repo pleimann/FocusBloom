@@ -1,7 +1,7 @@
 [versions]
 
 androidDriver = "2.1.0"
-kotlin = "2.2.0"
+kotlin = "2.2.21"
 compose = "1.9.1"
 
 koin = "4.1.1"
@@ -36,7 +36,6 @@ android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = 
 core = { module = "androidx.core:core", version.ref = "core" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
-jfa = { module = "de.jangassen:jfa", version.ref = "jfa" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }

@@ -152,7 +152,7 @@ fun AddTaskScreen(
                 currentLocalDateTime = LocalDateTime(
                     year = taskDate.year,
                     month = taskDate.month,
-                    dayOfMonth = taskDate.dayOfMonth,
+                    day = taskDate.day,
                     hour = startTime.hour,
                     minute = startTime.minute,
                 ),
@@ -195,7 +195,7 @@ fun AddTaskScreen(
                         currentLocalDateTime = LocalDateTime(
                             year = taskDate.year,
                             month = taskDate.month,
-                            dayOfMonth = taskDate.dayOfMonth,
+                            day = taskDate.day,
                             hour = it.hour,
                             minute = it.minute,
                         ),

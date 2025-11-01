@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * Copyright 2023 Joel Kanyi.
  *
@@ -55,10 +57,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-
     buildFeatures {
         compose = true
     }
@@ -66,6 +64,9 @@ android {
 
 kotlin {
     jvmToolchain(17)
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget("17")
+    }
 }
 
 dependencies {

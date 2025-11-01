@@ -37,6 +37,7 @@ fun FocusBloomApp(
         1 -> true
         else -> false
     }
+
     val onBoardingCompleted = mainViewModel.onBoardingCompleted.collectAsState().value
 
     FocusBloomTheme(
@@ -48,6 +49,7 @@ fun FocusBloomApp(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,
         )
+
         when (onBoardingCompleted) {
             is OnBoardingState.Success -> {
                 Surface(

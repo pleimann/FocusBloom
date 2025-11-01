@@ -61,7 +61,7 @@ fun differenceBetweenDays(
     maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
 ): Int {
     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
-    return (maxDate.dayOfMonth - minDate.dayOfMonth)
+    return (maxDate.day - minDate.day)
 }
 
 fun LocalDate.plusDays(days: Int): LocalDate {
@@ -384,13 +384,13 @@ fun getLast52Weeks(): List<Pair<String, List<LocalDate>>> {
             0,
             3,
         )
-        } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
+        } ${week.first().day} ${if (week.first().year != thisYear) week.first().year else ""}" +
             " - ${
             week.last().month.name.lowercase().capitalize(Locale.current).substring(
                 0,
                 3,
             )
-            } ${week.last().dayOfMonth} ${if (week.last().year != thisYear) week.last().year else ""}" to week
+            } ${week.last().day} ${if (week.last().year != thisYear) week.last().year else ""}" to week
     }
     return weeks
 }
@@ -408,8 +408,8 @@ fun List<Float>.aAllEntriesAreZero(): Boolean {
 }
 
 fun LocalDate.prettyFormat(): String {
-    return "${this.dayOfMonth}${
-    when (this.dayOfMonth) {
+    return "${this.day}${
+    when (this.day) {
         1, 21, 31 -> "st"
         2, 22 -> "nd"
         3, 23 -> "rd"

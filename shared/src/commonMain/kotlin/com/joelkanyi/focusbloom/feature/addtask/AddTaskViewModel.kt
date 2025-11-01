@@ -90,7 +90,7 @@ class AddTaskViewModel(
                 currentLocalDateTime = LocalDateTime(
                     year = taskDate.value.year,
                     month = taskDate.value.month,
-                    dayOfMonth = taskDate.value.dayOfMonth,
+                    day = taskDate.value.day,
                     hour = startTime.value.hour,
                     minute = startTime.value.minute,
                 ),
@@ -110,7 +110,7 @@ class AddTaskViewModel(
                     currentLocalDateTime = LocalDateTime(
                         year = taskDate.value.year,
                         month = taskDate.value.month,
-                        dayOfMonth = taskDate.value.dayOfMonth,
+                        day = taskDate.value.day,
                         hour = startTime.value.hour,
                         minute = startTime.value.minute,
                     ),
@@ -231,7 +231,7 @@ class AddTaskViewModel(
                 currentLocalDateTime = LocalDateTime(
                     year = it?.date?.year ?: today().year,
                     month = it?.date?.month ?: today().month,
-                    dayOfMonth = it?.date?.dayOfMonth ?: today().dayOfMonth,
+                    day = it?.date?.day ?: today().day,
                     hour = it?.start?.time?.hour ?: today().time.hour,
                     minute = it?.start?.time?.minute ?: today().time.minute,
                 ),

@@ -21,11 +21,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -50,6 +46,7 @@ fun BloomNavigationRailBar(
 ) {
     val windowSizeClass = calculateWindowSizeClass()
     val setWeight = windowSizeClass.heightSizeClass > WindowHeightSizeClass.Compact
+
     NavigationRail(
         modifier = modifier.fillMaxHeight().alpha(0.95F),
         containerColor = MaterialTheme.colorScheme.surface,
@@ -68,11 +65,14 @@ fun BloomNavigationRailBar(
                 val isSelected by remember(currentRoute) {
                     derivedStateOf { currentRoute == navigationItem.route::class.qualifiedName }
                 }
+
                 if (setWeight && index == NavRail.entries.size - 1) {
                     Spacer(Modifier.weight(1f))
                 }
+
                 NavigationRailItem(
-                    modifier = Modifier.padding(vertical = 12.dp),
+                    modifier = Modifier.fillMaxHeight()
+                        .padding(vertical = 12.dp),
                     icon = {
                         Icon(
                             painter = painterResource(if (isSelected) navigationItem.selectedIcon else navigationItem.unselectedIcon),

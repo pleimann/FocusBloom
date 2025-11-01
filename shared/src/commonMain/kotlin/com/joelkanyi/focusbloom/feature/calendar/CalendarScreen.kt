@@ -321,7 +321,7 @@ fun CalendarScreenContent(
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                             Text(
-                                text = date.dayOfMonth.toString(),
+                                text = date.day.toString(),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = if (date == selectedDay) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                                 ),
