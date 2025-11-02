@@ -19,13 +19,16 @@ package com.joelkanyi.focusbloom.feature.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.joelkanyi.focusbloom.core.domain.model.CalendarEvent
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.repository.calendar.GoogleCalendarRepository
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.core.utils.plusDays
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -34,8 +37,14 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
 
+sealed class TimelineItem {
+    data class TaskItem(val task: Task) : TimelineItem()
+    data class EventItem(val event: CalendarEvent) : TimelineItem()
+}
+
 class CalendarViewModel(
     private val tasksRepository: TasksRepository,
+    private val googleCalendarRepository: GoogleCalendarRepository,
     settingsRepository: SettingsRepository,
 ) : ViewModel() {
     private val _selectedDay = MutableStateFlow(
@@ -66,6 +75,41 @@ class CalendarViewModel(
             started = SharingStarted.WhileSubscribed(),
             initialValue = emptyList(),
         )
+
+    // Calendar Events
+    val calendarEvents = googleCalendarRepository.getCalendarEvents()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = emptyList(),
+        )
+
+    // Combined timeline of tasks and calendar events for the selected day
+    val timelineItems = combine(
+        tasks,
+        calendarEvents,
+        selectedDay,
+    ) { taskList, eventList, day ->
+        val dayTasks = taskList.filter { task ->
+            task.date.date == day
+        }.map { TimelineItem.TaskItem(it) }
+
+        val dayEvents = eventList.filter { event ->
+            event.startTime.date == day
+        }.map { TimelineItem.EventItem(it) }
+
+        // Combine and sort by start time
+        (dayTasks + dayEvents).sortedBy { item ->
+            when (item) {
+                is TimelineItem.TaskItem -> item.task.start
+                is TimelineItem.EventItem -> item.event.startTime
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList(),
+    )
 
     val hourFormat = settingsRepository.getHourFormat()
         .map { it }
@@ -144,4 +188,12 @@ class CalendarViewModel(
             tasksRepository.deleteTask(task.id)
         }
     }
+
+    // Google Calendar integration
+    val isGoogleCalendarConnected = googleCalendarRepository.isAuthenticated()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false,
+        )
 }

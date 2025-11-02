@@ -16,8 +16,12 @@
 package com.joelkanyi.focusbloom.core.data.repository.settings
 
 import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
+import com.joelkanyi.focusbloom.core.domain.model.CalendarSyncSettings
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class SettingsRepositoryImpl(
     private val preferenceManager: PreferenceManager,
@@ -104,5 +108,42 @@ class SettingsRepositoryImpl(
 
     override fun toggleReminder(value: Int) {
         preferenceManager.setInt(key = PreferenceManager.NOTIFICATION_OPTION, value = value)
+    }
+
+    // Google Calendar Sync
+    override suspend fun saveGoogleCalendarEmail(email: String) {
+        preferenceManager.setString(key = PreferenceManager.GOOGLE_CALENDAR_EMAIL, value = email)
+    }
+
+    override fun getGoogleCalendarEmail(): Flow<String?> {
+        return preferenceManager.getString(key = PreferenceManager.GOOGLE_CALENDAR_EMAIL)
+    }
+
+    override suspend fun saveLastSyncTime(timestamp: Long) {
+        preferenceManager.setLong(key = PreferenceManager.LAST_SYNC_TIME, value = timestamp)
+    }
+
+    override fun getLastSyncTime(): Flow<Long?> {
+        return preferenceManager.getLong(key = PreferenceManager.LAST_SYNC_TIME)
+    }
+
+    override suspend fun saveCalendarSyncSettings(settings: CalendarSyncSettings) {
+        val json = Json.encodeToString(settings)
+        preferenceManager.setString(key = PreferenceManager.CALENDAR_SYNC_SETTINGS, value = json)
+    }
+
+    override fun getCalendarSyncSettings(): Flow<CalendarSyncSettings> {
+        return preferenceManager.getString(key = PreferenceManager.CALENDAR_SYNC_SETTINGS)
+            .map { jsonString ->
+                if (jsonString != null) {
+                    try {
+                        Json.decodeFromString<CalendarSyncSettings>(jsonString)
+                    } catch (e: Exception) {
+                        CalendarSyncSettings() // Return default if parsing fails
+                    }
+                } else {
+                    CalendarSyncSettings() // Return default if no settings saved
+                }
+            }
     }
 }

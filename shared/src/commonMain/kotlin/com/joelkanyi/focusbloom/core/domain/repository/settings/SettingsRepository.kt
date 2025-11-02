@@ -15,6 +15,7 @@
  */
 package com.joelkanyi.focusbloom.core.domain.repository.settings
 
+import com.joelkanyi.focusbloom.core.domain.model.CalendarSyncSettings
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
@@ -39,4 +40,12 @@ interface SettingsRepository {
     fun getUsername(): Flow<String?>
     fun remindersOn(): Flow<Int?>
     fun toggleReminder(value: Int)
+
+    // Google Calendar Sync
+    suspend fun saveGoogleCalendarEmail(email: String)
+    fun getGoogleCalendarEmail(): Flow<String?>
+    suspend fun saveLastSyncTime(timestamp: Long)
+    fun getLastSyncTime(): Flow<Long?>
+    suspend fun saveCalendarSyncSettings(settings: CalendarSyncSettings)
+    fun getCalendarSyncSettings(): Flow<CalendarSyncSettings>
 }

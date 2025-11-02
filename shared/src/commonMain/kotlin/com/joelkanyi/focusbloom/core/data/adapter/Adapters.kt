@@ -16,6 +16,7 @@
 package com.joelkanyi.focusbloom.core.data.adapter
 
 import app.cash.sqldelight.ColumnAdapter
+import com.joelkanyi.focusbloom.core.domain.model.SyncStatus
 
 val idAdapter = object : ColumnAdapter<Int, Long> {
     override fun decode(databaseValue: Long): Int {
@@ -124,5 +125,25 @@ val inProgressTaskAdapter = object : ColumnAdapter<Boolean, Long> {
 
     override fun encode(value: Boolean): Long {
         return if (value) 1 else 0
+    }
+}
+
+val syncStatusAdapter = object : ColumnAdapter<SyncStatus, String> {
+    override fun decode(databaseValue: String): SyncStatus {
+        return SyncStatus.valueOf(databaseValue)
+    }
+
+    override fun encode(value: SyncStatus): String {
+        return value.name
+    }
+}
+
+val lastSyncedAtAdapter = object : ColumnAdapter<Long, Long> {
+    override fun decode(databaseValue: Long): Long {
+        return databaseValue
+    }
+
+    override fun encode(value: Long): Long {
+        return value
     }
 }

@@ -1,0 +1,90 @@
+import com.joelkanyi.focusbloom.core.domain.model.SyncStatus;
+import kotlin.Boolean;
+import kotlin.Int;
+import kotlin.Long;
+import kotlin.String;
+import kotlinx.datetime.LocalDateTime;
+
+
+
+CREATE TABLE IF NOT EXISTS calendarEventEntity (
+    id INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
+    googleEventId TEXT NOT NULL UNIQUE,
+    calendarId TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    description TEXT,
+    startTime TEXT AS LocalDateTime NOT NULL,
+    endTime TEXT AS LocalDateTime NOT NULL,
+    color TEXT,
+    location TEXT,
+    isAllDay INTEGER AS Boolean NOT NULL DEFAULT 0,
+    isRecurring INTEGER AS Boolean NOT NULL DEFAULT 0,
+    syncStatus TEXT AS SyncStatus NOT NULL DEFAULT 'SYNCED',
+    lastSyncedAt INTEGER AS Long NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_calendarEvent_googleEventId ON calendarEventEntity(googleEventId);
+CREATE INDEX IF NOT EXISTS idx_calendarEvent_calendarId ON calendarEventEntity(calendarId);
+CREATE INDEX IF NOT EXISTS idx_calendarEvent_startTime ON calendarEventEntity(startTime);
+
+getAllCalendarEvents:
+SELECT * FROM calendarEventEntity ORDER BY startTime ASC;
+
+getCalendarEventById:
+SELECT * FROM calendarEventEntity WHERE id = ?;
+
+getCalendarEventByGoogleId:
+SELECT * FROM calendarEventEntity WHERE googleEventId = ?;
+
+getEventsByCalendarId:
+SELECT * FROM calendarEventEntity WHERE calendarId = ? ORDER BY startTime ASC;
+
+getEventsByDateRange:
+SELECT * FROM calendarEventEntity
+WHERE startTime >= ? AND endTime <= ?
+ORDER BY startTime ASC;
+
+getEventsForDay:
+SELECT * FROM calendarEventEntity
+WHERE date(startTime) = date(?)
+ORDER BY startTime ASC;
+
+getExpiredEvents:
+SELECT * FROM calendarEventEntity
+WHERE syncStatus = 'EXPIRED' OR (lastSyncedAt < ? AND syncStatus = 'SYNCED');
+
+insertCalendarEvent:
+INSERT OR REPLACE INTO calendarEventEntity (
+    googleEventId, calendarId, summary, description,
+    startTime, endTime, color, location,
+    isAllDay, isRecurring, syncStatus, lastSyncedAt
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateCalendarEvent:
+UPDATE calendarEventEntity
+SET summary = ?, description = ?, startTime = ?,
+    endTime = ?, color = ?, location = ?,
+    isAllDay = ?, isRecurring = ?,
+    syncStatus = ?, lastSyncedAt = ?
+WHERE googleEventId = ?;
+
+updateSyncStatus:
+UPDATE calendarEventEntity SET syncStatus = ?, lastSyncedAt = ? WHERE googleEventId = ?;
+
+markEventsAsExpired:
+UPDATE calendarEventEntity SET syncStatus = 'EXPIRED' WHERE lastSyncedAt < ?;
+
+deleteCalendarEventById:
+DELETE FROM calendarEventEntity WHERE id = ?;
+
+deleteCalendarEventByGoogleId:
+DELETE FROM calendarEventEntity WHERE googleEventId = ?;
+
+deleteEventsByCalendarId:
+DELETE FROM calendarEventEntity WHERE calendarId = ?;
+
+deleteExpiredEvents:
+DELETE FROM calendarEventEntity WHERE syncStatus = 'EXPIRED';
+
+deleteAllCalendarEvents:
+DELETE FROM calendarEventEntity;

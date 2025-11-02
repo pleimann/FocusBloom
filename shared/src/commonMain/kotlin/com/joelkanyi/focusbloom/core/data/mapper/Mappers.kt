@@ -15,8 +15,10 @@
  */
 package com.joelkanyi.focusbloom.core.data.mapper
 
+import com.joelkanyi.focusbloom.core.domain.model.CalendarEvent
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.utils.dateTimeToString
+import database.CalendarEventEntity
 import database.TaskEntity
 import kotlinx.datetime.LocalDateTime
 
@@ -56,4 +58,20 @@ fun Task.toTaskEntity() = TaskEntity(
     inProgressTask = inProgressTask,
     currentCycle = currentCycle,
     active = active,
+)
+
+fun CalendarEventEntity.toCalendarEvent() = CalendarEvent(
+    id = id,
+    googleEventId = googleEventId,
+    calendarId = calendarId,
+    summary = summary,
+    description = description,
+    startTime = startTime,
+    endTime = endTime,
+    color = color,
+    location = location,
+    isAllDay = isAllDay,
+    isRecurring = isRecurring,
+    syncStatus = syncStatus,
+    lastSyncedAt = lastSyncedAt,
 )

@@ -66,6 +66,9 @@ class PreferenceManager constructor(private val settings: Settings) {
         const val SHORT_BREAK_TIME = "short_break_time_key"
         const val LONG_BREAK_TIME = "long_break_time_key"
         const val HOUR_FORMAT = "hour_format_key"
+        const val GOOGLE_CALENDAR_EMAIL = "google_calendar_email_key"
+        const val LAST_SYNC_TIME = "last_sync_time_key"
+        const val CALENDAR_SYNC_SETTINGS = "calendar_sync_settings_key"
     }
 
     @OptIn(ExperimentalSettingsApi::class)

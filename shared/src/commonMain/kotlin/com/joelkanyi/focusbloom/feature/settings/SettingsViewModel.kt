@@ -18,6 +18,9 @@ package com.joelkanyi.focusbloom.feature.settings
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.joelkanyi.focusbloom.core.domain.model.CalendarInfo
+import com.joelkanyi.focusbloom.core.domain.model.CalendarSyncSettings
+import com.joelkanyi.focusbloom.core.domain.repository.calendar.GoogleCalendarRepository
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,6 +32,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
+    private val googleCalendarRepository: GoogleCalendarRepository,
 ) : ViewModel() {
     private val _selectedColorCardTitle = MutableStateFlow("")
     val selectedColorCardTitle = _selectedColorCardTitle.asStateFlow()
@@ -181,5 +185,120 @@ class SettingsViewModel(
         viewModelScope.launch {
             settingsRepository.toggleReminder(value)
         }
+    }
+
+    // Google Calendar Sync
+    val isGoogleCalendarConnected: StateFlow<Boolean> = googleCalendarRepository.isAuthenticated()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false,
+        )
+
+    val googleCalendarEmail: StateFlow<String?> = googleCalendarRepository.getUserEmail()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
+
+    val calendarSyncSettings: StateFlow<CalendarSyncSettings> =
+        googleCalendarRepository.getSyncSettings()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = CalendarSyncSettings(),
+            )
+
+    val lastSyncTime: StateFlow<Long?> = googleCalendarRepository.getLastSyncTime()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
+
+    private val _availableCalendars = MutableStateFlow<List<CalendarInfo>>(emptyList())
+    val availableCalendars = _availableCalendars.asStateFlow()
+
+    private val _isSyncing = MutableStateFlow(false)
+    val isSyncing = _isSyncing.asStateFlow()
+
+    private val _syncError = MutableStateFlow<String?>(null)
+    val syncError = _syncError.asStateFlow()
+
+    fun connectGoogleCalendar() {
+        viewModelScope.launch {
+            _isSyncing.value = true
+            _syncError.value = null
+            val result = googleCalendarRepository.signIn()
+            result.onSuccess {
+                // Fetch available calendars after successful sign-in
+                fetchAvailableCalendars()
+            }.onFailure { error ->
+                _syncError.value = error.message ?: "Failed to connect to Google Calendar"
+            }
+            _isSyncing.value = false
+        }
+    }
+
+    fun disconnectGoogleCalendar() {
+        viewModelScope.launch {
+            googleCalendarRepository.signOut()
+            _availableCalendars.value = emptyList()
+        }
+    }
+
+    fun fetchAvailableCalendars() {
+        viewModelScope.launch {
+            _isSyncing.value = true
+            val result = googleCalendarRepository.fetchAvailableCalendars()
+            result.onSuccess { calendars ->
+                // Update calendars with current selections
+                val currentSelections = calendarSyncSettings.value.selectedCalendarIds
+                _availableCalendars.value = calendars.map { calendar ->
+                    calendar.copy(isSelected = currentSelections.contains(calendar.id))
+                }
+            }.onFailure { error ->
+                _syncError.value = error.message ?: "Failed to fetch calendars"
+            }
+            _isSyncing.value = false
+        }
+    }
+
+    fun toggleCalendarSelection(calendarId: String) {
+        val updatedCalendars = _availableCalendars.value.map { calendar ->
+            if (calendar.id == calendarId) {
+                calendar.copy(isSelected = !calendar.isSelected)
+            } else {
+                calendar
+            }
+        }
+        _availableCalendars.value = updatedCalendars
+
+        // Update settings with selected calendar IDs
+        val selectedIds = updatedCalendars.filter { it.isSelected }.map { it.id }
+        updateCalendarSyncSettings(calendarSyncSettings.value.copy(selectedCalendarIds = selectedIds))
+    }
+
+    fun updateCalendarSyncSettings(settings: CalendarSyncSettings) {
+        viewModelScope.launch {
+            googleCalendarRepository.updateSyncSettings(settings)
+        }
+    }
+
+    fun manualSync() {
+        viewModelScope.launch {
+            _isSyncing.value = true
+            _syncError.value = null
+            val result = googleCalendarRepository.syncCalendarEvents()
+            result.onFailure { error ->
+                _syncError.value = error.message ?: "Sync failed"
+            }
+            _isSyncing.value = false
+        }
+    }
+
+    fun clearSyncError() {
+        _syncError.value = null
     }
 }

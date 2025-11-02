@@ -82,6 +82,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.navigation.NavController
+import com.joelkanyi.focusbloom.core.domain.model.CalendarEvent
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
@@ -137,6 +138,8 @@ fun CalendarScreen(
     val selectedDay = viewModel.selectedDay.collectAsState().value
     val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
     val calendarPagerState = rememberLazyListState()
+    val calendarEvents = viewModel.calendarEvents.collectAsState().value
+    val isGoogleCalendarConnected = viewModel.isGoogleCalendarConnected.collectAsState().value
     val verticalScrollState = rememberScrollState()
     val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
     val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
@@ -198,6 +201,8 @@ fun CalendarScreen(
             selectedDayTasks = tasks.filter {
                 it.date.date == selectedDay
             },
+            isGoogleCalendarConnected = isGoogleCalendarConnected,
+            calendarEvents = calendarEvents,
             verticalScrollState = verticalScrollState,
             calendarPagerState = calendarPagerState,
             onClickThisWeek = {
@@ -239,6 +244,8 @@ fun CalendarScreenContent(
     longBreakTime: Int,
     selectedDayTasks: List<Task>,
     selectedDay: LocalDate,
+    isGoogleCalendarConnected: Boolean,
+    calendarEvents: List<CalendarEvent>,
     onClickThisWeek: () -> Unit,
     onSelectDay: (LocalDate) -> Unit,
     onShowTaskOption: (task: Task) -> Unit,
@@ -331,6 +338,43 @@ fun CalendarScreenContent(
                     }
                 }
             }
+
+            // Google Calendar Events Indicator
+            if (isGoogleCalendarConnected) {
+                val selectedDayEvents = calendarEvents.filter { event ->
+                    event.startTime.date == selectedDay
+                }
+                if (selectedDayEvents.isNotEmpty()) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        ),
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "${selectedDayEvents.size} Google Calendar event${if (selectedDayEvents.size > 1) "s" else ""}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                            Text(
+                                text = "Synced",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
+                    }
+                }
+            }
+
             Box(modifier = Modifier.fillMaxSize()) {
                 if (selectedDayTasks.isNotEmpty()) {
                     Schedule(

@@ -15,10 +15,15 @@ captures
 .idea/tasks.xml
 .idea/modules.xml
 .idea/compiler.xml
+.idea/kotlinc.xml
+.idea/vcs.xml
+.idea/xcode.xml
 .idea/jarRepositories.xml
 .idea/deploymentTargetDropDown.xml
+.idea/deploymentTargetSelector.xml
 .idea/androidTestResultsUserPreferences.xml
 .idea/appInsightsSettings.xml
+.idea/AndroidProjectSystem.xml
 .idea/artifacts
 gradle.xml
 *.iml
@@ -101,3 +106,5 @@ test_output
 *.env*
 
 .kotlin
+
+credentials.json

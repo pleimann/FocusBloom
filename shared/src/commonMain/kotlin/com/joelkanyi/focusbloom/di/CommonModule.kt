@@ -23,13 +23,19 @@ import com.joelkanyi.focusbloom.core.data.adapter.currentAdapter
 import com.joelkanyi.focusbloom.core.data.adapter.currentCycleAdapter
 import com.joelkanyi.focusbloom.core.data.adapter.focusSessionsAdapter
 import com.joelkanyi.focusbloom.core.data.adapter.idAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.lastSyncedAtAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.syncStatusAdapter
+import com.joelkanyi.focusbloom.core.data.local.adapter.DateTimeAdapter
 import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
+import com.joelkanyi.focusbloom.core.data.repository.calendar.GoogleCalendarRepositoryImpl
 import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepositoryImpl
 import com.joelkanyi.focusbloom.core.data.repository.tasks.TasksRepositoryImpl
+import com.joelkanyi.focusbloom.core.domain.repository.calendar.GoogleCalendarRepository
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.database.BloomDatabase
 import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
+import database.CalendarEventEntity
 import database.TaskEntity
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -50,6 +56,13 @@ fun commonModule() = module {
                 currentAdapter = currentAdapter,
                 currentCycleAdapter = currentCycleAdapter,
                 focusSessionsAdapter = focusSessionsAdapter,
+            ),
+            calendarEventEntityAdapter = CalendarEventEntity.Adapter(
+                idAdapter = idAdapter,
+                startTimeAdapter = DateTimeAdapter(),
+                endTimeAdapter = DateTimeAdapter(),
+                syncStatusAdapter = syncStatusAdapter,
+                lastSyncedAtAdapter = lastSyncedAtAdapter,
             ),
         )
     }
@@ -72,6 +85,14 @@ fun commonModule() = module {
     single<TasksRepository> {
         TasksRepositoryImpl(
             bloomDatabase = get(),
+        )
+    }
+
+    single<GoogleCalendarRepository> {
+        GoogleCalendarRepositoryImpl(
+            bloomDatabase = get(),
+            googleAuthManager = get(),
+            settingsRepository = get(),
         )
     }
 }

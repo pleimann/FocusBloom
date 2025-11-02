@@ -16,6 +16,7 @@
 package com.joelkanyi.focusbloom.di
 
 import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
+import com.joelkanyi.focusbloom.platform.GoogleAuthManager
 import com.joelkanyi.focusbloom.platform.MultiplatformSettingsWrapper
 import com.joelkanyi.focusbloom.platform.NotificationsManager
 import org.koin.core.module.Module
@@ -25,4 +26,5 @@ actual fun platformModule(): Module = module {
     single { MultiplatformSettingsWrapper().createSettings() }
     single { DatabaseDriverFactory() }
     single { NotificationsManager() }
+    single { GoogleAuthManager(settings = get()) }
 }

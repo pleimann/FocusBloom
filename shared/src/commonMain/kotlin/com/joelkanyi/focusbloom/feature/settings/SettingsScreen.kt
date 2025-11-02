@@ -69,10 +69,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.joelkanyi.focusbloom.core.domain.model.CalendarInfo
+import com.joelkanyi.focusbloom.core.domain.model.CalendarSyncSettings
 import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.feature.settings.component.CalendarSyncSettingCard
 import com.joelkanyi.focusbloom.core.presentation.theme.Blue
 import com.joelkanyi.focusbloom.core.presentation.theme.Green
 import com.joelkanyi.focusbloom.core.presentation.theme.LightBlue
@@ -113,6 +116,15 @@ fun SettingsScreen(
     val currentSessionColor = viewModel.focusColor.collectAsState().value
     val showColorDialog = viewModel.showColorDialog.collectAsState().value
     val remindersOn = viewModel.remindersOn.collectAsState().value
+
+    // Calendar Sync State
+    val isGoogleCalendarConnected = viewModel.isGoogleCalendarConnected.collectAsState().value
+    val googleCalendarEmail = viewModel.googleCalendarEmail.collectAsState().value
+    val calendarSyncSettings = viewModel.calendarSyncSettings.collectAsState().value
+    val availableCalendars = viewModel.availableCalendars.collectAsState().value
+    val lastSyncTime = viewModel.lastSyncTime.collectAsState().value
+    val isSyncing = viewModel.isSyncing.collectAsState().value
+    val syncError = viewModel.syncError.collectAsState().value
 
     SettingsScreenContent(
         darkTheme = darkTheme,
@@ -209,6 +221,25 @@ fun SettingsScreen(
                 },
             )
         },
+        // Calendar Sync
+        isGoogleCalendarConnected = isGoogleCalendarConnected,
+        googleCalendarEmail = googleCalendarEmail,
+        calendarSyncSettings = calendarSyncSettings,
+        availableCalendars = availableCalendars,
+        lastSyncTime = lastSyncTime,
+        isSyncing = isSyncing,
+        syncError = syncError,
+        onConnectGoogleCalendar = { viewModel.connectGoogleCalendar() },
+        onDisconnectGoogleCalendar = { viewModel.disconnectGoogleCalendar() },
+        onToggleCalendar = { calendarId -> viewModel.toggleCalendarSelection(calendarId) },
+        onManualSync = { viewModel.manualSync() },
+        onToggleAutoSync = { enabled ->
+            viewModel.updateCalendarSyncSettings(
+                calendarSyncSettings.copy(autoSyncEnabled = enabled),
+            )
+        },
+        onUpdateCalendarSettings = { settings -> viewModel.updateCalendarSyncSettings(settings) },
+        onClearSyncError = { viewModel.clearSyncError() },
     )
 }
 
@@ -238,6 +269,21 @@ fun SettingsScreenContent(
     onSelectColor: (Long) -> Unit,
     remindersOn: Boolean,
     onRemindersChange: (Boolean) -> Unit,
+    // Calendar Sync
+    isGoogleCalendarConnected: Boolean,
+    googleCalendarEmail: String?,
+    calendarSyncSettings: CalendarSyncSettings,
+    availableCalendars: List<CalendarInfo>,
+    lastSyncTime: Long?,
+    isSyncing: Boolean,
+    syncError: String?,
+    onConnectGoogleCalendar: () -> Unit,
+    onDisconnectGoogleCalendar: () -> Unit,
+    onToggleCalendar: (String) -> Unit,
+    onManualSync: () -> Unit,
+    onToggleAutoSync: (Boolean) -> Unit,
+    onUpdateCalendarSettings: (CalendarSyncSettings) -> Unit,
+    onClearSyncError: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -294,6 +340,24 @@ fun SettingsScreenContent(
                     }
                 )
             }*/
+            item {
+                CalendarSyncSettingCard(
+                    isConnected = isGoogleCalendarConnected,
+                    email = googleCalendarEmail,
+                    syncSettings = calendarSyncSettings,
+                    availableCalendars = availableCalendars,
+                    lastSyncTime = lastSyncTime,
+                    isSyncing = isSyncing,
+                    syncError = syncError,
+                    onConnect = onConnectGoogleCalendar,
+                    onDisconnect = onDisconnectGoogleCalendar,
+                    onToggleCalendar = onToggleCalendar,
+                    onManualSync = onManualSync,
+                    onToggleAutoSync = onToggleAutoSync,
+                    onUpdateSettings = onUpdateCalendarSettings,
+                    onClearError = onClearSyncError,
+                )
+            }
             item {
                 ThemeSetting(
                     expanded = { title ->

@@ -106,6 +106,17 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.navigation.compose)
+
+            // KMPAuth for Google OAuth
+            implementation(libs.kmpauth.google)
+            implementation(libs.kmpauth.uihelper)
+
+            // Ktor for HTTP client
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
         }
 
         androidMain.dependencies {
@@ -117,6 +128,9 @@ kotlin {
 
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+
+            // Ktor Android Engine
+            implementation(libs.ktor.client.android)
         }
 
         jvmMain.dependencies {
@@ -136,6 +150,9 @@ kotlin {
 
             // JNA for Windows
             implementation(libs.jna)
+
+            // Ktor Java Engine
+            implementation(libs.ktor.client.java)
         }
 
         iosMain.dependencies {
@@ -143,6 +160,9 @@ kotlin {
 
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
+            // Ktor Darwin Engine
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
